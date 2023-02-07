@@ -94,6 +94,9 @@ if __name__ == "__main__":
 	print(a._private)
 	print(a.get_private())
 
+	print("")
+	print(a.__dict__)
+
 
 
 
