@@ -115,4 +115,19 @@ sys - cumulative time spent by all CPUs with sys-related tasks (such as memory a
 
 PYTEST:::
 pytest ./tests/test_particle.py::test_evolve
+
+
+cProfile:::
+written in C, small overhead, suitable as general-purpose profiler
+
+python3 -m cProfile particle.py
+
+## sort by  and output to file prof.out
+python3 -m cProfile -s tottime -o prof.out particle.py
+
+ncalls: Number of times function was called within script
+tottime: total time spent in function, without taking into acount calls to other functions. *** tottime most important metric for bottlenecks ***
+cumtime: time spent in function, including other function calls.
+percall: time spent for a single call of the function (cumtime/ncalls)
+filename:lineno: obvious
 '''
