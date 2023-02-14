@@ -1,7 +1,9 @@
 from typing import List
+from random import uniform
 
 from matplotlib import pyplot as plt
 from matplotlib import animation
+
 
 class Particle:
 
@@ -61,7 +63,7 @@ def visualize(simulator: ParticleSimulator) -> None:
 		animate,
 		init_func=init,
 		blit=True,
-		interval=10
+		interval=1000
 	)
 	plt.show()
 
@@ -76,6 +78,41 @@ def test_visualize():
 	simulator = ParticleSimulator(particles)
 	visualize(simulator)
 
+def benchmark():
+    particles = [
+        Particle(
+			uniform(-1.0, 1.0),
+			uniform(-1.0, 1.0),
+			uniform(-1.0, 1.0)
+		)
+		for i in range(1000)
+	]
+    simulator = ParticleSimulator(particles)
+    simulator.evolve(0.1)
+
 if __name__ == "__main__":
 
-	test_visualize()
+	#test_visualize()
+	#test_evolve()
+	benchmark()
+
+'''
+
+BENCHMARK:::
+cmd:
+time python particle.py ## time is built-in Unix library
+
+outputs:
+real - actual time of process from start to finish (as it timed with stopwatch)
+## good for I/O time spent
+
+user - cumulative time spent by all CPUs during computation
+## good for CPU performance
+
+
+sys - cumulative time spent by all CPUs with sys-related tasks (such as memory allocation)
+
+
+PYTEST:::
+pytest ./tests/test_particle.py::test_evolve
+'''
