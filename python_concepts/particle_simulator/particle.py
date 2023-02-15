@@ -17,6 +17,7 @@ class ParticleSimulator:
 	def __init__(self, particles: List[Particle]) -> None:
 		self.particles = particles
 
+	#@profile
 	def evolve(self, dt: int) -> None:
 		timestep = 0.0001
 		nsteps = int(dt/timestep)
@@ -130,4 +131,30 @@ tottime: total time spent in function, without taking into acount calls to other
 cumtime: time spent in function, including other function calls.
 percall: time spent for a single call of the function (cumtime/ncalls)
 filename:lineno: obvious
+
+
+Visualizing profilers:::
+Using qcachegrind (brew install)
+pip install pyprof2calltree to convert prof.out to qcachegrind readable input via
+
+pyprof2calltree -i prof.out -o prof.calltree
+qcachegrind prof.calltree
+
+Can also use gprod2dot for call graph
+
+Line-By-Line Profiling:::
+pip install line_profiler ## https://github.com/rkern/line_profiler
+
+use the @profile decorator to functions intended to be monitored
+then run kernprof -l -v particle.py
+
+-l: to use line_profiler function
+-v: to print results to screen
+
+line: line number run
+hits: number of times that line was run
+time: execution time of line in microseconds
+per hit: time/hits
+% time: fraction of total time spent executing that line *** most important ***
+line contents: content of the line
 '''

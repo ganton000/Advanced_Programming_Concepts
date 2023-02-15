@@ -47,3 +47,4 @@ def test_evolve_with_benchmark(benchmark):
 
 
 	benchmark(simulator.evolve, 0.1) # benchmark the function
+

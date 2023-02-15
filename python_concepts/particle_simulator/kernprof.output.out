@@ -1,0 +1,27 @@
+Wrote profile results to particle.py.lprof
+Timer unit: 1e-06 s
+
+Total time: 3.03618 s
+File: particle.py
+Function: evolve at line 20
+
+Line #      Hits         Time  Per Hit   % Time  Line Contents
+==============================================================
+    20                                           	@profile
+    21                                           	def evolve(self, dt: int) -> None:
+    22         1          1.0      1.0      0.0  		timestep = 0.0001
+    23         1          1.0      1.0      0.0  		nsteps = int(dt/timestep)
+    24
+    25      1000        562.0      0.6      0.0  		for i in range(nsteps):
+    26   1000000     352883.0      0.4     11.6  			for p in self.particles:
+    27   1000000     611891.0      0.6     20.2  				norm = (p.x**2 + p.y**2)**0.5
+    28   1000000     335685.0      0.3     11.1  				v_x = -p.y/norm # opp/hyp
+    29   1000000     314020.0      0.3     10.3  				v_y = p.x/norm
+    30
+    31                                           				# displacement
+    32   1000000     332493.0      0.3     11.0  				d_x = timestep * p.ang_vel * v_x
+    33   1000000     327904.0      0.3     10.8  				d_y = timestep * p.ang_vel * v_y
+    34
+    35   1000000     366154.0      0.4     12.1  				p.x += d_x
+    36   1000000     394589.0      0.4     13.0  				p.y += d_y
+
