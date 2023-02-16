@@ -3,7 +3,7 @@ from random import uniform
 
 from matplotlib import pyplot as plt
 from matplotlib import animation
-
+from memory_profiler import profile
 
 class Particle:
 
@@ -17,7 +17,7 @@ class ParticleSimulator:
 	def __init__(self, particles: List[Particle]) -> None:
 		self.particles = particles
 
-	#@profile
+	@profile
 	def evolve(self, dt: int) -> None:
 		timestep = 0.0001
 		nsteps = int(dt/timestep)
@@ -86,7 +86,7 @@ def benchmark():
 			uniform(-1.0, 1.0),
 			uniform(-1.0, 1.0)
 		)
-		for i in range(1000)
+		for i in range(10000)
 	]
     simulator = ParticleSimulator(particles)
     simulator.evolve(0.1)
@@ -157,4 +157,20 @@ time: execution time of line in microseconds
 per hit: time/hits
 % time: fraction of total time spent executing that line *** most important ***
 line contents: content of the line
+
+
+Memory Optimization:::
+
+pip install memory_profiler psutil
+
+add @profile to function intended to be monitored
+
+mprof run particle.py
+
+mprof plot --csv > memory_usage.csv ## after first command, generates table data
+
+Note: mprof run --multiprocess particle.py enables profiling against multiple processes.
+
+
+__slots__ helps reduce memory footprint, by avoiding storing the variables of the instance in an internal dictionary. Drawbacks: prevents addition of attributes outside of the ones defined in __slots__
 '''
