@@ -167,7 +167,6 @@ add @profile to function intended to be monitored
 
 mprof run particle.py
 
-mprof plot --csv > memory_usage.csv ## after first command, generates table data
 
 Note: mprof run --multiprocess particle.py enables profiling against multiple processes.
 
