@@ -80,8 +80,19 @@ def generate_unique_random_strings(length: int) -> str:
 
 	return ''.join(choice(ascii_uppercase) for i in range(length))
 
-def find_longest_prefix_in_set_of_strings(arr: List[str], prefix: str):
-	pass
+
+def get_trie(string_arr: List[str]):
+
+	strings_dict = { s:0 for s in string_arr }
+
+	# dict where all values are 0
+	strings_trie = trie(**strings_dict)
+
+	return strings_trie
+
+def find_longest_prefix_with_trie(strings_trie: dict, prefix: str):
+
+	return list(strings_trie.iter(prefix))
 
 if __name__ == "__main__":
 
@@ -134,13 +145,22 @@ if __name__ == "__main__":
 	print(result)
 	print("")
 
-	strings = [ generate_unique_random_strings(32) for i in range(10000) ]
+	strings_arr = [ generate_unique_random_strings(32) for i in range(10000) ]
 	prefix = "AA"
 
 	start_time = perf_counter_ns()
-	matches = [ s for s in strings if s.startswith(prefix) ]
-	tot_time = perf_counter_ns() - start_time
-	print(f"total time for prefix lookup (with str.startswith): {tot_time} nanoseconds\n")
+	matches = [ s for s in strings_arr if s.startswith(prefix) ]
+	startswith_time = perf_counter_ns() - start_time
+	print(f"total time for prefix lookup (with str.startswith): {startswith_time} nanoseconds\n")
 	print(matches)
 	print(len(matches))
 
+	strings_trie = get_trie(strings_arr)
+	start_time = perf_counter_ns()
+	matches = find_longest_prefix_with_trie(strings_trie, prefix)
+	trie_time = perf_counter_ns() - start_time
+	print(f"total time for prefix lookup (with patricia.trie): {trie_time} nanoseconds\n")
+	print(matches)
+	print(len(matches))
+
+	assert trie_time < startswith_time, f"str.startswith is faster by {trie_time - startswith_time} nanonseconds"
