@@ -1,6 +1,10 @@
+from typing import List
 from collections import defaultdict, Counter
 from time import perf_counter_ns
-from random import randint
+from random import randint, choice
+from string import ascii_uppercase
+from patricia import trie
+import heapq
 
 def counter_dict(items):
 	counter = {}
@@ -18,6 +22,66 @@ def counter_defaultdict(items):
 	for item in items:
 		counter[item] += 1
 	return counter
+
+def search_word_with_comprehensions(document, word):
+	''' O(N) query time '''
+	return [ doc for doc in document if word in doc ]
+
+def preprocess(document):
+	'''
+	preprocess documents to decrease query time;
+	query involves simple dictionary lookup (via inverted index search)
+	The preprocessing is expensive! And every query requires encoding.
+	'''
+
+	index = {}
+	for i, doc in enumerate(document):
+		for word in doc.split():
+			if word not in index:
+				index[word] = [i]
+			else:
+				index[word].append(i)
+	return index
+
+def preprocess_with_sets(document):
+
+	index = {}
+	for i, doc in enumerate(document):
+		for word in doc.split():
+			if word not in index:
+				index[word] = {i}
+			else:
+				index[word].add(i)
+	return index
+
+def query_word_with_inverted_index(preprocessed_doc_index, document, word):
+	''' associates each word with list of documents where the word is present (by the index) '''
+
+	result_docs = [ document[i] for i in preprocessed_doc_index[word] ]
+	return result_docs
+
+def query_words_with_inverted_index_set(preprocessed_doc_index, document, word1, word2):
+	result_docs = [ document[i] for i in preprocessed_doc_index[word1].intersection(preprocessed_doc_index[word2]) ]
+	return result_docs
+
+def heapify_collection(collection: list):
+	print("Collection: ", collection)
+
+	heapq.heapify(collection)
+	print("Heaped Collection: ", collection)
+
+	heapq.heappop(collection) # O(log(N))
+
+	print(collection)
+	heapq.heappush(collection, 1)
+	print(collection)
+
+def generate_unique_random_strings(length: int) -> str:
+
+	return ''.join(choice(ascii_uppercase) for i in range(length))
+
+def find_longest_prefix_in_set_of_strings(arr: List[str], prefix: str):
+	pass
 
 if __name__ == "__main__":
 
@@ -44,3 +108,39 @@ if __name__ == "__main__":
 		"cats and dogs smell roses",
 		"Carla eats an apple"
 	]
+
+	word = "table"
+	start_time = perf_counter_ns()
+	search_word_with_comprehensions(docs, word)
+	tot_time = perf_counter_ns() - start_time
+	print(f"total time (list comprehension): {tot_time} nanoseconds\n")
+
+	preprocessed_doc_index = preprocess(docs)
+	start_time = perf_counter_ns()
+	results = query_word_with_inverted_index(preprocessed_doc_index, docs, word)
+	print(results)
+	tot_time = perf_counter_ns() - start_time
+	print(f"total time (inverted index): {tot_time} nanoseconds\n")
+
+	preprocessed_doc_index = preprocess_with_sets(docs)
+	start_time = perf_counter_ns()
+	results = query_words_with_inverted_index_set(preprocessed_doc_index, docs, word, "cat")
+	print(results)
+	tot_time = perf_counter_ns() - start_time
+	print(f"total time (inverted index): {tot_time} nanoseconds\n")
+
+	collection = [10, 3, 3, 4, 5, 6]
+	result = heapify_collection(collection)
+	print(result)
+	print("")
+
+	strings = [ generate_unique_random_strings(32) for i in range(10000) ]
+	prefix = "AA"
+
+	start_time = perf_counter_ns()
+	matches = [ s for s in strings if s.startswith(prefix) ]
+	tot_time = perf_counter_ns() - start_time
+	print(f"total time for prefix lookup (with str.startswith): {tot_time} nanoseconds\n")
+	print(matches)
+	print(len(matches))
+
