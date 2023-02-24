@@ -88,5 +88,7 @@ if __name__ == "__main__":
 	B = np.array([[5, 6], [7, 8]])
 
 	C = A*B
+	print(2*A)
+	print(A*2)
 	print(C) #element-wise multiplication
 
